@@ -40,9 +40,10 @@ public class checksum {
 
         if (checkSumSize == 8 || checkSumSize == 16 || checkSumSize == 32) {
             try {
+                System.out.println();
                 int characterCount = fileToWords(textFile, checkSumSize);
-                String checksum = checkSum(checkSumSize);
-                System.out.printf("%2d bit checksum is %8x for all %4d chars\n", checkSumSize, Long.parseUnsignedLong(checksum, 32), characterCount);
+                long checksum = checkSum(checkSumSize);
+                System.out.printf("%2d bit checksum is %8x for all %4d chars\n", checkSumSize, checksum, characterCount);
             } catch (FileNotFoundException e) {
                 System.err.println("Could not find file.");
             }
@@ -51,7 +52,7 @@ public class checksum {
         }
     }
 
-    private static String checkSum(int checkSumSize) {
+    private static long checkSum(int checkSumSize) {
         long checksum = 0x0;
         long mask = (checkSumSize == 8 ? 0xFF : (checkSumSize == 16 ? 0xFFFF : 0xFFFFFFFFL));
         for(char[] word : words) {
@@ -62,19 +63,22 @@ public class checksum {
             }
             checksum += curr;
         }
-        return Long.toUnsignedString(checksum & mask, 32);
+        return checksum & mask;
     }
 
     private static int fileToWords(File file, int checkSumSize) throws FileNotFoundException {
-        System.out.println();
         words = new char[1][checkSumSize / 8];
         int wordCounter = 0, wordLengthCounter = 0, characterCount = 0, lineLength = 0;
         Scanner read = new Scanner(file);
         String line;
+        
         while (read.hasNextLine()) {
+            
             line = read.nextLine();
+            
             for (char c : line.toCharArray()) {
                 words[wordCounter][wordLengthCounter++] = c;
+                
                 if(lineLength % 80 == 0 && lineLength != 0) {
                     System.out.println();
                     lineLength = 0;
@@ -93,26 +97,19 @@ public class checksum {
                 characterCount++;
             }
         }
+        
         //add new line
         words[wordCounter][wordLengthCounter++] = '\n';
         System.out.println();
         characterCount++;
+        
         //pad
         while(characterCount % (checkSumSize/8) != 0) {
-            if (wordLengthCounter >= checkSumSize/8) {
-                char[][] newWords = new char[++wordCounter+1][checkSumSize/8];
-                int i = 0;
-                for(char[] word : words) {
-                    newWords[i++] = Arrays.copyOf(word, checkSumSize/8);
-                }
-                words = Arrays.copyOf(newWords, wordCounter+1);
-                wordLengthCounter = 0;
-            }
-            words[wordCounter][wordLengthCounter] = 'X';
-            wordLengthCounter++;
+            words[wordCounter][wordLengthCounter++] = 'X';
             System.out.print('X');
             characterCount++;
         }
+        
         System.out.println();
         read.close();
         return characterCount;
