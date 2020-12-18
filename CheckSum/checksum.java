@@ -7,7 +7,7 @@ import java.util.Scanner;
 |   Assignment:  HW 02–Calculating the 8, 16, or 32 bit checksum for a 
 |                given input file
 |
-|    Author:  Nicholas Chitty
+|    Author:  *******************
 |    Language:  Java
 |
 |   To Compile:  javac checksum.java checksum
@@ -118,7 +118,7 @@ public class checksum {
 
 /*
  * +=============================================================================
- * | I, Wm Nicholas Chitty (wi782067) affirm that this program is 
+ * | I, ******************* affirm that this program is 
  * | entirely my own work and that I have neither developed my code together with 
  * | any another person, nor copied any code from any other person, nor permitted 
  * | my code to be copied or otherwise used by any other person, nor have I 
